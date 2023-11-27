@@ -61,12 +61,11 @@
                     mensaje_error.textContent = 'Error en la autenticación. Por favor, inténtalo de nuevo.';
                 }else{
                     mensaje_error.textContent = '';
-                    
                     if (data.admin){
-                        window.location.href='/cliente'
+                        window.location.href='/admin'
                     }
                     else{
-                        window.location.href='/admin'
+                        window.location.href='/cliente'
                     }
                 }
 
