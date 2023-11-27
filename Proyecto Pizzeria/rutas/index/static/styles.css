@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background-image: url("./fondoInicio.jpg");
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+}
+
+h1 {
+    margin-bottom: 0;
+}
+
+section {
+    padding: 2em;
+}
+
+form {
+    max-width: 300px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 1em;
+    box-sizing: border-box;
+}
+
+#btnCancelar{
+  background-color: #E82D2D;
+}
+
+button {
+    background-color: #333;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+#mensaje_error{
+    font-size: 10px;
+}
+
+#contenedor_inicio{
+    background-color: rgba(255, 255, 255, 0.9); /* Color de fondo con transparencia */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 20px;
+    max-width: 600px; /* Ancho máximo del contenedor */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+}
+
+#mensaje_cuenta_creada{
+    height: 50px;
+
+}
+
+#icono_palomita{
+    width: 30px;
+    height: 30px;
+}
+
+#div_mensaje_correcto{
+    display: none;
+    width: 300px;
+    height:  30px;
+    margin: 0 auto;
+    
+}

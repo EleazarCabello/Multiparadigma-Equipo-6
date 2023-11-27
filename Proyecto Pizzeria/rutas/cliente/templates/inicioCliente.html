@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzería - Ingredientes</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a la Pizzería</h1>
+        <p>Elige tus ingredientes</p>
+    </header>
+
+    <section class="ingredientes">
+        <div class="ingrediente">
+            <img src="tomate.png" alt="Tomate">
+            <p>Tomate</p>
+            <button onclick="agregarAlCarrito('Tomate')">Agregar al carrito</button>
+        </div>
+
+        <div class="ingrediente">
+            <img src="queso.png" alt="Queso">
+            <p>Queso</p>
+            <button onclick="agregarAlCarrito('Queso')">Agregar al carrito</button>
+        </div>
+
+        <div class="ingrediente">
+            <img src="jamon.png" alt="Jamón">
+            <p>Jamón</p>
+            <button onclick="agregarAlCarrito('Jamón')">Agregar al carrito</button>
+        </div>
+
+        <!-- Agrega más ingredientes aquí -->
+    </section>
+
+    <section class="carrito">
+        <h2>Carrito</h2>
+        <ul id="lista-carrito">
+            <!-- La lista de ingredientes seleccionados se mostrará aquí -->
+        </ul>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Pizzería</p>
+    </footer>
+
+    <script>
+        function agregarAlCarrito(ingrediente) {
+            // Obtén la lista de carrito
+            var listaCarrito = document.getElementById('lista-carrito');
+
+            // Crea un nuevo elemento de lista
+            var nuevoElemento = document.createElement('li');
+            nuevoElemento.textContent = ingrediente;
+
+            // Agrega el nuevo elemento a la lista de carrito
+            listaCarrito.appendChild(nuevoElemento);
+        }
+    </script>
+</body>
+</html>
