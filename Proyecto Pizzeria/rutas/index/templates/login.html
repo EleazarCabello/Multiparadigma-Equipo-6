@@ -55,13 +55,13 @@
             .then(response => response.json())
             .then(data=>{
                 localStorage.setItem('token',data.auth_token)
-                console.log(data)
-                console.log(data.auth_token)
+                localStorage.setItem('usuario_id',data.usuario_id)
                 if (data.message == "Datos incorrectos"){
                     mensaje_error.textContent = 'Error en la autenticación. Por favor, inténtalo de nuevo.';
                 }else{
+                    console.log(data.admin)
                     mensaje_error.textContent = '';
-                    if (data.admin){
+                    if (data.admin == true){
                         window.location.href='/admin'
                     }
                     else{

@@ -56,7 +56,7 @@ class Ingredientes(db.Model):
     __tablename__="ingredientes"
     id=db.Column(db.Integer,primary_key=True,autoincrement=True)
     nombre=db.Column(db.String(255),nullable=True)
-    categoria=db.Column(db.String(255),unique=True,nullable=True)
+    categoria=db.Column(db.String(255),nullable=True)
     precio=db.Column(db.Float)
     
 class Productos(db.Model):
@@ -72,6 +72,12 @@ class Pedidos(db.Model):
     precio_total=db.Column(db.Float)
     id_usuario = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     
+    def __init__(self,fecha,precio_total,id_usuario):
+        self.fecha=fecha
+        self.precio_total=precio_total
+        self.id_usuario=id_usuario
+
+    
 class Ventas(db.Model):
     __tablename__="ventas"
     id=db.Column(db.Integer,primary_key=True,autoincrement=True)
@@ -79,4 +85,10 @@ class Ventas(db.Model):
     precio=db.Column(db.Float)
     id_producto = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
     id_pedido = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
+    
+    def __init__(self,fecha,precio,id_producto,id_pedido):
+        self.fecha=fecha
+        self.precio=precio
+        self.id_producto=id_producto
+        self.id_pedido=id_pedido
     

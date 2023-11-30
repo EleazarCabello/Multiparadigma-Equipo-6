@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clientes - Pizzería</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('appcliente.static', filename='styles.css') }}">
 </head>
 <body>
@@ -14,39 +15,272 @@
     <div class="container">
         <div class="groupbox" id="groupbox1">
             <h2>Masas</h2>
-            <p>normal</p>
-            <p>normal</p>
-            <p>normal</p>
-            <p>normal</p>
+            <br>
+            {% for ingrediente in misIngredientes %}
+                {% if ingrediente.categoria == "masa" %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="masas" id="masa_{{ ingrediente.id }}" value="{{ ingrediente.precio }}" checked>
+                    <label class="form-check-label" for="masa_{{ ingrediente.id }}">
+                    {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
+                    </label>
+                </div>
+                {% endif %}
+            {% endfor %}
         </div>
     
         <div class="groupbox" id="groupbox2">
             <h2>Ingrediente 1</h2>
-            <p>pepperoni</p>
-            <p>pepperoni</p>
-            <p>pepperoni</p>
-            <p>pepperoni</p>
+            <br>
+            {% for ingrediente in misIngredientes %}
+                {% if ingrediente.categoria == "ingrediente" and ingrediente.nombre != "Ninguno" %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ingrediente1" id="ingrediente1_{{ ingrediente.id }}" value="{{ ingrediente.precio }}" checked>
+                    <label class="form-check-label" for="ingrediente1_{{ ingrediente.id }}">
+                    {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
+                    </label>
+                </div>
+                {% endif %}
+            {% endfor %}
         </div>
     
         <div class="groupbox" id="groupbox3">
             <h2>Ingrediente 2</h2>
-            <p>piña</p>
-            <p>piña</p>
-            <p>piña</p>
-            <p>piña</p>
+            <br>
+            {% for ingrediente in misIngredientes %}
+                {% if ingrediente.categoria == "ingrediente" %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="ingrediente2" id="ingrediente2_{{ ingrediente.id }}" value="{{ ingrediente.precio }}" checked>
+                    <label class="form-check-label" for="ingrediente2_{{ ingrediente.id }}">
+                    {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
+                    </label>
+                </div>
+                {% endif %}
+            {% endfor %}
         </div>
     
         <div class="groupbox" id="groupbox4">
             <h2>Extras</h2>
-            <p>refresco</p>
-            <p>refresco</p>
-            <p>refresco</p>
-            <p>refresco</p>
+            <br>
+            {% for producto in misProductos %}
+                {% if producto.nombre != "Pizza personalizada" %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="extra" id="extra_{{ producto.id }}" value="{{ producto.precio }}" checked>
+                    <label class="form-check-label" for="extra_{{ producto.id }}">
+                    {{ producto.nombre }}- ${{ producto.precio }}
+                    </label>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="groupbox" id="groupbox5">
+            <p id="lbl_precio">$0.0</p>
+            <button type="button" id="btn_regresar" class="btn btn-dark">Regresar</button>
+            <button type="button" id="btn_agregar" class="btn btn-success">Agregar</button>
+        </div>
+        
+    </div>
+
+    <div class="cont" id="carrito">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Carrito de Compras</h5>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carritoBody">
+
+                    </tbody>
+                </table>
+                <p id="totalAPagarMensaje">Total a pagar: $0.0</p>
+                <button type="button" id="btn_terminar_pedido" class="btn btn-success">Pagar</button>
+            </div>
         </div>
     </div>
+    
+        
+      <!-- Modal -->
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Pedido enviado</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Su pedido llegara entre 30 y 45 minutos.
+                Gracias por su compra.
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar pedido</button>
+              <button type="button" id="btn_aceptar" class="btn btn-primary">Aceptar</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <footer>
         <p>&copy; 2023 Pizzería</p>
     </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        var Carrito = [];
+        var VentasIndividuales = [];
+        var CalcularTotalFinal = 0.0;
+
+        const BotonRegresar = document.querySelector('#btn_regresar')
+        const RadioButtons = document.querySelectorAll('input[class="form-check-input"]');
+        const BotonAgregar = document.querySelector('#btn_agregar');
+        const lblPrecioTotal = document.querySelector('#lbl_precio');
+        var carritoBody = document.getElementById('carritoBody');
+        var BotonTerminarPedido = document.getElementById('btn_terminar_pedido');
+        var miModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+        const BotonAceptarModal = document.querySelector('#btn_aceptar')
+
+        var PrecioTotal = 0;
+        var NombreProducto = "";
+        HacerOperacion()
+        lblPrecioTotal.textContent = "$"+PrecioTotal
+        
+        // Añade un controlador de eventos a cada radio button
+        RadioButtons.forEach(function(radioButton) {
+            radioButton.addEventListener('change', function() {
+                HacerOperacion()
+                lblPrecioTotal.textContent = "$"+PrecioTotal
+
+            });
+        });
+
+        BotonRegresar.addEventListener('click', (e)=>{
+            e.preventDefault();
+            window.location.href='/'
+            })
+
+        BotonAgregar.addEventListener('click', (e)=>{
+            e.preventDefault();
+            const miPedido = {producto:NombreProducto,precio:PrecioTotal}
+            Carrito.push(miPedido)
+            CargarCarrito()
+
+            CalcularTotalFinal = 0.0;
+            const lblCostoTotalMensaje = document.querySelector('#totalAPagarMensaje');
+            
+            Carrito.forEach(function(producto) {
+                CalcularTotalFinal= CalcularTotalFinal + producto.precio
+            })
+            lblCostoTotalMensaje.textContent = "Total a pagar: $"+CalcularTotalFinal;
+
+            var ValorRadioButtonMasas = parseFloat(document.querySelector('input[name="masas"]:checked').value)|| 0;
+            var ValorRadioButtonIngrediente1 = parseFloat(document.querySelector('input[name="ingrediente1"]:checked').value)|| 0;
+            var ValorRadioButtonIngrediente2 = parseFloat(document.querySelector('input[name="ingrediente2"]:checked').value)|| 0;
+            var ValorRadioButtonExtra = parseFloat(document.querySelector('input[name="extra"]:checked').value)|| 0;
+
+            var labelMasas = document.querySelector('label[for="' + document.querySelector('input[name="masas"]:checked').id + '"]');
+            var labelIngrediente1 = document.querySelector('label[for="' + document.querySelector('input[name="ingrediente1"]:checked').id + '"]');
+            var labelIngrediente2 = document.querySelector('label[for="' + document.querySelector('input[name="ingrediente2"]:checked').id + '"]');
+            var labelExtra = document.querySelector('label[for="' + document.querySelector('input[name="extra"]:checked').id + '"]');
+
+
+            const NombreSoloMasa = labelMasas.textContent.trim().split('-')
+            const NombreSoloIngrediente1 = labelIngrediente1.textContent.trim().split('-')
+            const NombreSoloIngrediente2 = labelIngrediente2.textContent.trim().split('-')
+            const NombreSoloExtra = labelExtra.textContent.trim().split('-')
+
+            const productoIndividual = {nombre:NombreSoloMasa[0]+", "+NombreSoloIngrediente1[0]+", "+NombreSoloIngrediente2[0],precio:ValorRadioButtonMasas + ValorRadioButtonIngrediente1+ValorRadioButtonIngrediente2,tipoProducto:'Pizza perzonalizada'}
+            const productoExtraIndividual = {nombre:NombreSoloExtra[0],precio:ValorRadioButtonExtra, tipoProducto:NombreSoloExtra[0]}
+            VentasIndividuales.push(productoIndividual);
+            VentasIndividuales.push(productoExtraIndividual);
+
+            //console.log(VentasIndividuales)
+
+        })
+
+        BotonTerminarPedido.addEventListener('click', function() {
+            miModal.show();
+            });
+
+
+        function eliminarProducto(index) {
+            const lblCostoTotalMensaje = document.querySelector('#totalAPagarMensaje');
+            CalcularTotalFinal= CalcularTotalFinal - Carrito[index].precio
+            lblCostoTotalMensaje.textContent = "Total a pagar: $"+CalcularTotalFinal;
+            // Elimina el producto del arreglo Carrito
+            Carrito.splice(index, 1);
+            VentasIndividuales.splice(index*2,2)
+            CargarCarrito()
+        }
+
+        BotonAceptarModal.addEventListener('click', function(){
+            fetch('/cliente/insertar_pedido',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        'id_usuario':localStorage.getItem("usuario_id"),
+                        'precio_total':CalcularTotalFinal,
+                        'carrito':Carrito,
+                        'ventas_individuales':VentasIndividuales
+                    })
+                })
+                .then(response => response.json())
+                .then(data=>{
+                    console.log(data);
+
+                    setTimeout(function() {
+                        window.location.href='/login';
+                        }, 500);
+                })
+        })
+
+        function CargarCarrito(){
+            
+            carritoBody.innerHTML = ``;
+            
+
+            // Recorre el arreglo y agrega filas a la tabla
+            Carrito.forEach(function(producto, index) {
+                console.log(index)
+                var fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td class="texto-celda">${producto.producto}</td>
+                    <td class="texto-celda">${producto.precio}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger" onclick="eliminarProducto(${index})">Eliminar</button>
+                    </td>
+                `;
+                carritoBody.appendChild(fila);
+            });
+           
+
+        }
+
+        function HacerOperacion(){
+            var ValorRadioButtonMasas = parseFloat(document.querySelector('input[name="masas"]:checked').value)|| 0;
+            var ValorRadioButtonIngrediente1 = parseFloat(document.querySelector('input[name="ingrediente1"]:checked').value)|| 0;
+            var ValorRadioButtonIngrediente2 = parseFloat(document.querySelector('input[name="ingrediente2"]:checked').value)|| 0;
+            var ValorRadioButtonExtra = parseFloat(document.querySelector('input[name="extra"]:checked').value)|| 0;
+
+            PrecioTotal = ValorRadioButtonMasas + ValorRadioButtonIngrediente1+ValorRadioButtonIngrediente2+ValorRadioButtonExtra;
+
+            var labelMasas = document.querySelector('label[for="' + document.querySelector('input[name="masas"]:checked').id + '"]');
+            var labelIngrediente1 = document.querySelector('label[for="' + document.querySelector('input[name="ingrediente1"]:checked').id + '"]');
+            var labelIngrediente2 = document.querySelector('label[for="' + document.querySelector('input[name="ingrediente2"]:checked').id + '"]');
+            var labelExtra = document.querySelector('label[for="' + document.querySelector('input[name="extra"]:checked').id + '"]');
+            NombreProducto = labelMasas.textContent.trim()+", "+labelIngrediente1.textContent.trim()+", "+labelIngrediente2.textContent.trim()+", "+labelExtra.textContent.trim();
+
+        
+        }
+        
+
+    </script>
 </body>
 </html>

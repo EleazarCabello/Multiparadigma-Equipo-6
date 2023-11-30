@@ -58,41 +58,29 @@ def crear_cuenta():
 @appIndex.route('/login/iniciar_sesion',methods=["GET","POST"])
 def iniciar_sesion():
     
-    if(request.method=="GET"):
-        #token = request.args.get('token')
-        #if token:
-        #    info = verificar(token)
-        #    if(info['status']!="fail"):
-        #        responseObject={
-        #            'status':"success",
-        #            'message':'valid token',
-        #            'info':info
-        #        }
-        #        return jsonify(responseObject)
-        return render_template('login.html')
-    else:
-        correo = request.json['correo']
-        password = request.json['password']
+
+    correo = request.json['correo']
+    password = request.json['password']
+    
+    if password == "":
+        password = "vacio"
+    
+    print(correo,password)
+    miUsuario = Usuarios.constructor_temporal(correo=correo,password=password)
+    
+    buscarUsuario = Usuarios.query.filter_by(correo=correo).first()
+    if buscarUsuario:
+        validacion = bcrypt.check_password_hash(buscarUsuario.password,password)
         
-        if password == "":
-            password = "vacio"
-        
-        print(correo,password)
-        miUsuario = Usuarios.constructor_temporal(correo=correo,password=password)
-        
-        buscarUsuario = Usuarios.query.filter_by(correo=correo).first()
-        if buscarUsuario:
-            validacion = bcrypt.check_password_hash(buscarUsuario.password,password)
-            
-            if validacion:
-                print(miUsuario)
-                auth_token = miUsuario.encode_auth_token(id=buscarUsuario.id)
-                responseObject={
-                    'status':"success",
-                    'login':'Loggin exitoso',
-                    'auth_token':auth_token,
-                    'message':"Inicio exitoso",
-                    'admin': miUsuario.admin
-                }
-                return jsonify(responseObject)
-        return jsonify({'message':"Datos incorrectos"})
+        if validacion:
+            auth_token = miUsuario.encode_auth_token(id=buscarUsuario.id)
+            responseObject={
+                'status':"success",
+                'login':'Loggin exitoso',
+                'auth_token':auth_token,
+                'message':"Inicio exitoso",
+                'admin': buscarUsuario.admin,
+                'usuario_id':buscarUsuario.id
+            }
+            return jsonify(responseObject)
+    return jsonify({'message':"Datos incorrectos"})

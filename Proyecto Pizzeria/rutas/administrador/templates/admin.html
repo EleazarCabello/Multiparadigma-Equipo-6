@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador - Pizzería</title>
+    <link rel="stylesheet" href="{{ url_for('appadmin.static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>¡Bienvenido, Administrador!</h1>
+    </header>
+
+    <section>
+          <div class="tabs">
+            <div class="tab-container">
+              <div id="tab5" class="tab"> 
+                <a id="tabla" href="#tab5">Pedidos</a>
+                <div class="tab-content">
+                  <center><table border>
+                    <tr>
+                      <th>ID</th>
+                      <th>Fecha</th>
+                      <th>Precio_Total</th>
+                      <th>ID_Usuario</th>
+                    </tr>
+
+                    {% for pedido in tablaPedidos %}
+                    <tr class="registro" onclick="seleccionarRegistroPedidos(this)">
+                      <td>{{ pedido.id }}</td>
+                      <td>{{ pedido.fecha }}</td>
+                      <td>{{ pedido.precio_total }}</td>
+                      <td>{{ pedido.id_usuario }}</td>
+                    </tr> 
+                    {% endfor %}                 
+                  </table>
+                </div></center>
+              </div>
+              <div id="tab4" class="tab"> 
+                <a id="tabla" href="#tab4">Ventas</a>
+                <div class="tab-content">
+                  <center><table border>
+                    <tr>
+                      <th>ID</th>
+                      <th>ID_Producto</th>
+                      <th>ID_Pedido</th>
+                      <th>Precio</th>
+                      <th>Fecha</th>
+                    </tr>
+                    {% for venta in tablaVentas %}
+                    <tr class="registro" onclick="seleccionarRegistroVentas(this)">
+                      <td>{{ venta.id }}</td>
+                      <td>{{ venta.id_producto }}</td>
+                      <td>{{ venta.id_pedido }}</td>
+                      <td>{{ venta.precio }}</td>
+                      <td>{{ venta.fecha }} </td>
+                    </tr>
+                    {% endfor %}     
+                  </table>
+                </div><center>
+              </div>
+              <div id="tab3" class="tab">
+                <a id="tabla" href="#tab3">Productos</a>
+                <div class="tab-content">
+                  <center><table border>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Precio</th>
+                    </tr>
+                    {% for producto in tablaProductos %}
+                    <tr class="registro" onclick="seleccionarRegistroProductos(this)">
+                      <td>{{ producto.id }}</td>
+                      <td>{{ producto.nombre }}</td>
+                      <td>{{ producto.precio }}</td>
+                    </tr>
+                    {% endfor %}              
+                  </table>
+                </div><center>
+              </div>
+              <div id="tab2" class="tab">
+                <a id="tabla" href="#tab2">Ingredientes</a>
+                <div class="tab-content">
+                  <center><table border>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombre</th>
+                      <th>Categoria</th>
+                      <th>Precio</th>
+                    </tr>
+                    {% for ingrediente in tablaIngredientes %}
+                    <tr class="registro" onclick="seleccionarRegistroIngredientes(this)">
+                      <td>{{ ingrediente.id }}</td>
+                      <td>{{ ingrediente.nombre }}</td>
+                      <td>{{ ingrediente.categoria }} </td>
+                      <td>{{ ingrediente.precio }} </td>
+                    </tr>
+                    {% endfor %}   
+                  </table>
+                </div><center>
+              </div> 
+              <div id="tab1" class="tab">
+                <a id="tabla" href="#tab1">Usuarios</a>
+                <div class="tab-content">
+                  <center><table border>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nombres</th>
+                      <th>Apellidos</th>
+                      <th>Dirección</th>
+                      <th>Correo</th>
+                      <th>Contraseña</th>
+                      <th>Admin</th>
+                    </tr>
+                    {% for usuario in tablaUsuarios %}
+                    <tr class="registro" onclick="seleccionarRegistroUsuarios(this)">
+                      <td>{{ usuario.id }}</td>
+                      <td>{{ usuario.nombres }}</td>
+                      <td>{{ usuario.apellidos }}</td>
+                      <td>{{ usuario.direccion }}</td>
+                      <td>{{ usuario.correo }}</td>
+                      <td>{{ usuario.password }}</td>
+                      <td>{{ usuario.admin }}</td>
+                    </tr>      
+                    {% endfor %}            
+                  </table>
+                </div><center>
+              </div> 
+            </div>
+          </div>
+    </section>
+
+    <div class="position-fixed top-0 end-0 p-3" style="width: 300px; background-color: #f8f9fa;">
+      <h3>Información</h3>
+      <p>Detalles de la selección:</p>
+      <ul id="infoList">
+          <!-- Aquí se mostrará la información -->
+      </ul>
+      <button class="btn btn-danger" onclick="eliminarRegistro()">Eliminar</button>
+      <button class="btn btn-warning" onclick="editarRegistro()">Editar</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Pizzería</p>
+    </footer>
+
+    <Script>
+      function seleccionarRegistroPedidos(fila) {
+            // Obtener datos de la fila seleccionada
+            const id = fila.cells[0].textContent;
+            const fecha = fila.cells[1].textContent;
+            const precioTotal = fila.cells[2].textContent;
+            const idUsuario = fila.cells[3].textContent;
+
+            // Guardar los datos en un arreglo o realizar otras acciones
+            const datosSeleccionados = {
+                id: id,
+                fecha: fecha,
+                precioTotal: precioTotal,
+                idUsuario: idUsuario
+            };
+
+            // Ejemplo: Imprimir en la consola
+            console.log(datosSeleccionados);
+        }
+
+        function seleccionarRegistroVentas(fila) {
+            // Obtener datos de la fila seleccionada
+            const id = fila.cells[0].textContent;
+            const id_producto = fila.cells[1].textContent;
+            const id_pedido = fila.cells[2].textContent;
+            const precio = fila.cells[3].textContent;
+            const fecha = fila.cells[4].textContent;
+
+            // Guardar los datos en un arreglo o realizar otras acciones
+            const datosSeleccionados = {
+                id: id,
+                id_producto: id_producto,
+                id_pedido: id_pedido,
+                precio: precio,
+                fecha: fecha
+            };
+
+            // Ejemplo: Imprimir en la consola
+            console.log(datosSeleccionados);
+        }
+
+        function seleccionarRegistroProductos(fila) {
+            // Obtener datos de la fila seleccionada
+            const id = fila.cells[0].textContent;
+            const nombre = fila.cells[1].textContent;
+            const precio = fila.cells[2].textContent;
+
+            // Guardar los datos en un arreglo o realizar otras acciones
+            const datosSeleccionados = {
+                id: id,
+                nombre: nombre,
+                precio: precio
+            };
+
+            // Ejemplo: Imprimir en la consola
+            console.log(datosSeleccionados);
+        }
+
+        function seleccionarRegistroIngredientes(fila) {
+            // Obtener datos de la fila seleccionada
+            const id = fila.cells[0].textContent;
+            const nombre = fila.cells[1].textContent;
+            const categoria = fila.cells[2].textContent;
+            const precio = fila.cells[3].textContent;
+
+            // Guardar los datos en un arreglo o realizar otras acciones
+            const datosSeleccionados = {
+                id: id,
+                nombre: nombre,
+                categoria: categoria,
+                precio: precio
+            };
+
+            // Ejemplo: Imprimir en la consola
+            console.log(datosSeleccionados);
+        }
+
+        function seleccionarRegistroUsuarios(fila) {
+            // Obtener datos de la fila seleccionada
+            const id = fila.cells[0].textContent;
+            const nombres = fila.cells[1].textContent;
+            const apellidos = fila.cells[2].textContent;
+            const direccion = fila.cells[3].textContent;
+            const correo = fila.cells[4].textContent;
+            const password = fila.cells[5].textContent;
+            const admin = fila.cells[6].textContent;
+
+            // Guardar los datos en un arreglo o realizar otras acciones
+            const datosSeleccionados = {
+                id: id,
+                nombres: nombres,
+                apellidos: apellidos,
+                direccion: direccion,
+                correo: correo,
+                password: password,
+                admin: admin
+            };
+
+            // Ejemplo: Imprimir en la consola
+            console.log(datosSeleccionados);
+        }
+    </Script>
+</body>
+</html>
