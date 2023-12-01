@@ -71,7 +71,7 @@ def generate_pdf_pedidos():
         data.append([pedido.id, pedido.fecha, pedido.precio_total, pedido.id_usuario])
     return generate_pdf(data, "pedidos")
 
-@appPDF.route('/generarPdf/usaurios')
+@appPDF.route('/generarPdf/usuarios')
 def generate_pdf_usuarios():
     usuarios = Usuarios.query.all()
     data = [["ID", "Nombres", "Apellidos", "Dirección", "Correo", "Admin"]]
