@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrador - Pizzería</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ url_for('appadmin.static', filename='styles.css') }}">
 </head>
 <body>
@@ -12,10 +13,10 @@
     </header>
 
     <section>
-          <div class="tabs">
+          <div class="tabs" id="div_tablas">
             <div class="tab-container">
               <div id="tab5" class="tab"> 
-                <a id="tabla" href="#tab5">Pedidos</a>
+                <a id="tabla" onclick="SeleccionarTablaPedidos()" href="#tab5">Pedidos</a>
                 <div class="tab-content">
                   <center><table border>
                     <tr>
@@ -37,7 +38,7 @@
                 </div></center>
               </div>
               <div id="tab4" class="tab"> 
-                <a id="tabla" href="#tab4">Ventas</a>
+                <a id="tabla" onclick="SeleccionarTablaVentas()" href="#tab4">Ventas</a>
                 <div class="tab-content">
                   <center><table border>
                     <tr>
@@ -60,7 +61,7 @@
                 </div><center>
               </div>
               <div id="tab3" class="tab">
-                <a id="tabla" href="#tab3">Productos</a>
+                <a id="tabla" onclick="SeleccionarTablaProductos()" href="#tab3">Productos</a>
                 <div class="tab-content">
                   <center><table border>
                     <tr>
@@ -79,7 +80,7 @@
                 </div><center>
               </div>
               <div id="tab2" class="tab">
-                <a id="tabla" href="#tab2">Ingredientes</a>
+                <a id="tabla" onclick="SeleccionarTablaIngredientes()" href="#tab2">Ingredientes</a>
                 <div class="tab-content">
                   <center><table border>
                     <tr>
@@ -100,7 +101,7 @@
                 </div><center>
               </div> 
               <div id="tab1" class="tab">
-                <a id="tabla" href="#tab1">Usuarios</a>
+                <a id="tabla" onclick="SeleccionarTablaUsuarios()" href="#tab1">Usuarios</a>
                 <div class="tab-content">
                   <center><table border>
                     <tr>
@@ -128,40 +129,280 @@
               </div> 
             </div>
           </div>
-    </section>
+    </section> 
 
-    <div class="position-fixed top-0 end-0 p-3" style="width: 300px; background-color: #f8f9fa;">
+    <div>
+      <button class="btn btn-dark" id="btn_agregar" onclick="AgregarRegistro()">Agregar</button>
+    </div>
+
+    <div class="position-fixed" id="div_detalles">
       <h3>Información</h3>
       <p>Detalles de la selección:</p>
       <ul id="infoList">
-          <!-- Aquí se mostrará la información -->
+          
       </ul>
-      <button class="btn btn-danger" onclick="eliminarRegistro()">Eliminar</button>
-      <button class="btn btn-warning" onclick="editarRegistro()">Editar</button>
+      <button class="btn btn-danger" id="btn_eliminar" onclick="EliminarRegistro()">Eliminar</button>
+      <button class="btn btn-warning" id="btn_editar" onclick="EditarRegistro()">Editar</button>
+      <br>
+      <p id="mensaje_error" style="color: red;"></p>
     </div>
 
+
+
+<!-- Modal de Usuario -->
+    <div class="modal" role="dialog" id="modalUsuario" tabindex="-1">
+      <div class="modal-dialog"  role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title" id="modalUsuarioLabel">Nuevo Usuario</h1>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="nombres" class="col-form-label">Nombres:</label>
+                <input type="text" class="form-control" id="nombres">
+              </div>
+              <div class="mb-3">
+                <label for="apellidos" class="col-form-label">Apellidos:</label>
+                <input type="text" class="form-control" id="apellidos">
+              </div>
+              <div class="mb-3">
+                <label for="direccion" class="col-form-label">Dirección:</label>
+                <input type="text" class="form-control" id="direccion">
+              </div>
+              <div class="mb-3">
+                <label for="correo" class="col-form-label">Correo:</label>
+                <input type="email" class="form-control" id="correo">
+              </div>
+              <div class="mb-3">
+                <label for="password" class="col-form-label">Contraseña:</label>
+                <input type="password" class="form-control" id="password">
+              </div>
+              <div class="mb-3">
+                <label for="tipo" class="col-form-label">Tipo:</label>
+                <select class="form-select" id="admin">
+                  <option value="false">Cliente</option>
+                  <option value="true">Administrador</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="button" onclick="agregarUsuario()" class="btn btn-primary">Guardar Usuario</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="modalIngrediente">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <!-- Contenido del modal -->
+              <div class="modal-header">
+                  <h5 class="modal-title">Agregar Ingrediente</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <!-- Formulario dentro del modal -->
+                  <form>
+                      <div class="form-group">
+                          <label for="nombreIngrediente">Nombre:</label>
+                          <input type="text" class="form-control" id="nombreIngrediente">
+                      </div>
+                      <div class="form-group">
+                          <label for="categoriaIngrediente">Categoría:</label>
+                          <input type="text" class="form-control" id="categoriaIngrediente">
+                      </div>
+                      <div class="form-group">
+                          <label for="precioIngrediente">Precio:</label>
+                          <input type="text" class="form-control" id="precioIngrediente">
+                      </div>
+                  </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button type="button" onclick="agregarIngrediente()" class="btn btn-primary">Guardar</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="modal" tabindex="-1" role="dialog" id="modalProducto">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- Contenido del modal -->
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario dentro del modal -->
+                <form>
+                    <div class="form-group">
+                        <label for="nombreProducto">Nombre:</label>
+                        <input type="text" class="form-control" id="nombreProducto">
+                    </div>
+                    <div class="form-group">
+                        <label for="precioProducto">Precio:</label>
+                        <input type="text" class="form-control" id="precioProducto">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="agregarProducto()" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
     <footer>
         <p>&copy; 2023 Pizzería</p>
     </footer>
 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <Script>
+      var tablaActual = "usuarios"
+      var datosSeleccionados = []
+      var ultimoBoton
+      var IdSeleccionado
+
+      var BotonAgregar = document.getElementById('btn_agregar');
+      document.getElementById('btn_editar').disabled = true;
+      document.getElementById('btn_eliminar').disabled = true;
+
+
+      var miModalUsuario = new bootstrap.Modal(document.getElementById('modalUsuario'));
+      var miModalIngrediente = new bootstrap.Modal(document.getElementById('modalIngrediente'));
+      var miModalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
+
+
+      function SeleccionarTablaPedidos(){
+        tablaActual = "pedidos"
+        BotonAgregar.disabled = true
+      }
+      function SeleccionarTablaVentas(){
+        tablaActual = "ventas"
+        BotonAgregar.disabled = true
+      }
+      function SeleccionarTablaProductos(){
+        tablaActual = "productos"
+        BotonAgregar.disabled = false
+      }
+      function SeleccionarTablaIngredientes(){
+        tablaActual = "ingredientes"
+        BotonAgregar.disabled = false
+      }
+      function SeleccionarTablaUsuarios(){
+        tablaActual = "usuarios"
+        BotonAgregar.disabled = false
+      }
+
+
+      function agregarProducto(){
+
+        fetch('/admin/'+ultimoBoton,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        'id':IdSeleccionado,
+                        'nombre':document.getElementById('nombreProducto').value,
+                        'precio':document.getElementById('precioProducto').value,
+                        'tabla': tablaActual
+                    })
+                })
+                .then(response => response.json())
+                .then(data=>{
+                    console.log(data);
+                    window.location.reload()
+                })
+                .catch(error => mensaje_error.textContent = "Error datos incorrectos.");
+                
+      }
+      
+      function agregarUsuario(){
+
+        fetch('/admin/'+ultimoBoton,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        'id':IdSeleccionado,
+                        'nombres':document.getElementById('nombres').value,
+                        'apellidos':document.getElementById('apellidos').value,
+                        'direccion':document.getElementById('direccion').value,
+                        'correo':document.getElementById('correo').value,
+                        'password':document.getElementById('password').value,
+                        'admin':document.getElementById('admin').value,
+                        'tabla': tablaActual
+                    })
+                })
+                .then(response => response.json())
+                .then(data=>{
+                    console.log(data);
+                    window.location.reload()
+                })
+                .catch(error => mensaje_error.textContent = "Error datos incorrectos.");
+                
+      }
+
+      function agregarIngrediente(){
+        fetch('/admin/'+ultimoBoton,{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        'id':IdSeleccionado,
+                        'nombre':document.getElementById('nombreIngrediente').value,
+                        'categoria':document.getElementById('categoriaIngrediente').value,
+                        'precio':document.getElementById('precioIngrediente').value,
+                        'tabla': tablaActual
+                    })
+                })
+                .then(response => response.json())
+                .then(data=>{
+                    console.log(data);
+                    window.location.reload()
+                })
+                .catch(error => mensaje_error.textContent = "Error datos incorrectos.");
+                
+      }
+
+
       function seleccionarRegistroPedidos(fila) {
             // Obtener datos de la fila seleccionada
             const id = fila.cells[0].textContent;
             const fecha = fila.cells[1].textContent;
             const precioTotal = fila.cells[2].textContent;
             const idUsuario = fila.cells[3].textContent;
+            tablaActual = "pedidos"
+            
 
             // Guardar los datos en un arreglo o realizar otras acciones
-            const datosSeleccionados = {
+            datosSeleccionados = {
                 id: id,
                 fecha: fecha,
                 precioTotal: precioTotal,
-                idUsuario: idUsuario
+                idUsuario: idUsuario,
+                tabla:tablaActual
             };
-
-            // Ejemplo: Imprimir en la consola
-            console.log(datosSeleccionados);
+            ActualizarInfo(datosSeleccionados)
+            document.getElementById('btn_editar').disabled = true;
+            document.getElementById('btn_eliminar').disabled = true;
+            document.getElementById('btn_agregar').disabled = true;
         }
 
         function seleccionarRegistroVentas(fila) {
@@ -171,18 +412,21 @@
             const id_pedido = fila.cells[2].textContent;
             const precio = fila.cells[3].textContent;
             const fecha = fila.cells[4].textContent;
+            tablaActual = "ventas"
 
             // Guardar los datos en un arreglo o realizar otras acciones
-            const datosSeleccionados = {
+            datosSeleccionados = {
                 id: id,
                 id_producto: id_producto,
                 id_pedido: id_pedido,
                 precio: precio,
-                fecha: fecha
+                fecha: fecha,
+                tabla: tablaActual
             };
-
-            // Ejemplo: Imprimir en la consola
-            console.log(datosSeleccionados);
+            ActualizarInfo(datosSeleccionados)
+            document.getElementById('btn_editar').disabled = true;
+            document.getElementById('btn_eliminar').disabled = true;
+            document.getElementById('btn_agregar').disabled = true;
         }
 
         function seleccionarRegistroProductos(fila) {
@@ -190,16 +434,20 @@
             const id = fila.cells[0].textContent;
             const nombre = fila.cells[1].textContent;
             const precio = fila.cells[2].textContent;
+            tablaActual = "productos"
+            IdSeleccionado = fila.cells[0].textContent;
 
             // Guardar los datos en un arreglo o realizar otras acciones
-            const datosSeleccionados = {
+            datosSeleccionados = {
                 id: id,
                 nombre: nombre,
-                precio: precio
+                precio: precio,
+                tabla: tablaActual
             };
-
-            // Ejemplo: Imprimir en la consola
-            console.log(datosSeleccionados);
+            ActualizarInfo(datosSeleccionados)
+            document.getElementById('btn_editar').disabled = false;
+            document.getElementById('btn_eliminar').disabled = false;
+            document.getElementById('btn_agregar').disabled = false;
         }
 
         function seleccionarRegistroIngredientes(fila) {
@@ -208,17 +456,21 @@
             const nombre = fila.cells[1].textContent;
             const categoria = fila.cells[2].textContent;
             const precio = fila.cells[3].textContent;
+            tablaActual = "ingredientes"
+            IdSeleccionado = fila.cells[0].textContent;
 
             // Guardar los datos en un arreglo o realizar otras acciones
-            const datosSeleccionados = {
+            datosSeleccionados = {
                 id: id,
                 nombre: nombre,
                 categoria: categoria,
-                precio: precio
+                precio: precio,
+                tabla:tablaActual
             };
-
-            // Ejemplo: Imprimir en la consola
-            console.log(datosSeleccionados);
+            ActualizarInfo(datosSeleccionados)
+            document.getElementById('btn_editar').disabled = false;
+            document.getElementById('btn_eliminar').disabled = false;
+            document.getElementById('btn_agregar').disabled = false;
         }
 
         function seleccionarRegistroUsuarios(fila) {
@@ -230,21 +482,79 @@
             const correo = fila.cells[4].textContent;
             const password = fila.cells[5].textContent;
             const admin = fila.cells[6].textContent;
+            tablaActual = "usuarios"
+            IdSeleccionado = fila.cells[0].textContent;
 
             // Guardar los datos en un arreglo o realizar otras acciones
-            const datosSeleccionados = {
+            datosSeleccionados = {
                 id: id,
                 nombres: nombres,
                 apellidos: apellidos,
                 direccion: direccion,
                 correo: correo,
                 password: password,
-                admin: admin
+                admin: admin,
+                tabla: tablaActual
             };
-
-            // Ejemplo: Imprimir en la consola
-            console.log(datosSeleccionados);
+            ActualizarInfo(datosSeleccionados)
+            document.getElementById('btn_editar').disabled = false;
+            document.getElementById('btn_eliminar').disabled = false;
+            document.getElementById('btn_agregar').disabled = false;
         }
+
+
+        function ActualizarInfo(arreglo){
+          infoList = document.querySelector("#infoList")
+
+          infoList.innerHTML = '';
+
+          for (const clave in arreglo) {
+            const li = document.createElement('li');
+            li.textContent = `${clave}: ${arreglo[clave]}`;
+            infoList.appendChild(li);
+            }
+        }
+
+        function MostrarModal(){
+          if (tablaActual == 'usuarios') {
+              miModalUsuario.show()
+            } else if (tablaActual == 'productos') {
+               miModalProducto.show()
+            } else if (tablaActual == 'ingredientes') {
+              miModalIngrediente.show()
+            }
+        }
+
+        function AgregarRegistro(){
+          MostrarModal()
+          ultimoBoton = "agregar"
+        }
+
+        function EliminarRegistro(){
+          
+          fetch('/admin/eliminar',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                        'registro':datosSeleccionados
+                    })
+                })
+                .then(response => response.json())
+                .then(data=>{
+                    console.log(data);
+                    window.location.reload()
+                })
+                .catch(error => mensaje_error.textContent = "No se puede eliminar porque esta relacionada con otra tabla.");
+                
+        }
+
+        function EditarRegistro(){
+          MostrarModal()
+          ultimoBoton = "editar"
+        }
+
     </Script>
 </body>
 </html>

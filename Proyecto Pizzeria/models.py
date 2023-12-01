@@ -59,11 +59,20 @@ class Ingredientes(db.Model):
     categoria=db.Column(db.String(255),nullable=True)
     precio=db.Column(db.Float)
     
+    def __init__(self,nombre,categoria,precio):
+        self.nombre=nombre
+        self.categoria=categoria
+        self.precio=precio
+    
 class Productos(db.Model):
     __tablename__="productos"
     id=db.Column(db.Integer,primary_key=True,autoincrement=True)
     nombre=db.Column(db.String(255),nullable=True)
     precio=db.Column(db.Float)
+    
+    def __init__(self,nombre,precio):
+        self.nombre=nombre
+        self.precio=precio
     
 class Pedidos(db.Model):
     __tablename__="pedidos"

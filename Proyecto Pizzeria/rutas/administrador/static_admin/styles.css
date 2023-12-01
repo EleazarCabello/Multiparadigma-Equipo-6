@@ -203,6 +203,29 @@ tr:nth-child(even) {
   left: 10px;
 }
 
+#div_detalles{
+  position: absolute;
+  right: 10px;
+  top: 15%;
+  width: 19%;
+  background-color: #6188af;
+  font-size: 20px;
+  padding: 5px;
+}
+
+#div_tablas{
+  position: absolute;
+  left: 5px;
+  top: 10%;
+  width: 78%;
+}
+
+#btn_agregar{
+  position: absolute;
+  top: 11%;
+  right: 8%;
+}
+
 footer {
   background-color: #333;
   color: #fff;
