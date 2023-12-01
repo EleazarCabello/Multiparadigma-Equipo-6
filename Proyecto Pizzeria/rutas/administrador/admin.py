@@ -1,5 +1,5 @@
 from flask import Blueprint,request,redirect,render_template,url_for,send_from_directory,jsonify
-from sqlalchemy import exc
+from sqlalchemy import exc,desc,asc
 from app import db,bcrypt
 from models import Usuarios
 from models import Ingredientes
@@ -14,11 +14,11 @@ appAdmin = Blueprint('appadmin', __name__, template_folder="templates",static_fo
 @appAdmin.route('/admin')
 def inicio_administrador():
     
-    tablaUsuarios = Usuarios.query.all()
-    tablaIngredientes = Ingredientes.query.all()
-    tablaProductos = Productos.query.all()
-    tablaVentas = Ventas.query.all()
-    tablaPedidos = Pedidos.query.all()
+    tablaUsuarios = Usuarios.query.order_by(Usuarios.id).all()
+    tablaIngredientes = Ingredientes.query.order_by(Ingredientes.id).all()
+    tablaProductos = Productos.query.order_by(Productos.id).all()
+    tablaVentas = Ventas.query.order_by(Ventas.id).all()
+    tablaPedidos = Pedidos.query.order_by(Pedidos.id).all()
     
     return render_template('admin.html',tablaUsuarios=tablaUsuarios,tablaIngredientes=tablaIngredientes,tablaProductos=tablaProductos,tablaVentas=tablaVentas,tablaPedidos=tablaPedidos)
 
@@ -59,8 +59,9 @@ def admin_agregar():
     elif tabla == "productos":
         precio = request.json['precio']
         nombre = request.json['nombre']
+        url_imagen = request.json['url_imagen']
 
-        producto = Productos(precio=precio,nombre=nombre)
+        producto = Productos(precio=precio,nombre=nombre,url_imagen=url_imagen)
         db.session.add(producto)
         db.session.commit()
         
@@ -68,13 +69,13 @@ def admin_agregar():
         precio = request.json['precio']
         nombre = request.json['nombre']
         categoria = request.json['categoria']
+        url_imagen = request.json['url_imagen']
         
-        ingrediente = Ingredientes(precio=precio,categoria=categoria,nombre=nombre)
+        ingrediente = Ingredientes(precio=precio,categoria=categoria,nombre=nombre,url_imagen=url_imagen)
         db.session.add(ingrediente)
         db.session.commit()
         
         
-    
 
     responseObject={
             'status':'Exitoso',
@@ -108,6 +109,7 @@ def admin_editar():
         
         ProductosEncontrado.nombre = request.json['nombre']
         ProductosEncontrado.precio = request.json['precio']
+        ProductosEncontrado.url_imagen = request.json['url_imagen']
         db.session.commit()
 
         
@@ -117,6 +119,7 @@ def admin_editar():
         IngredientesEncontrado.nombre = request.json['nombre']
         IngredientesEncontrado.precio = request.json['precio']
         IngredientesEncontrado.categoria = request.json['categoria']
+        IngredientesEncontrado.url_imagen = request.json['url_imagen']
         db.session.commit()
 
         

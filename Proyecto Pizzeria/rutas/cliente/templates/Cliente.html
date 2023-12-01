@@ -22,6 +22,7 @@
                     <input class="form-check-input" type="radio" name="masas" id="masa_{{ ingrediente.id }}" value="{{ ingrediente.precio }}" checked>
                     <label class="form-check-label" for="masa_{{ ingrediente.id }}">
                     {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
+                    <img src="{{ ingrediente.url_imagen }}" class="imagenes" alt="">
                     </label>
                 </div>
                 {% endif %}
@@ -38,6 +39,7 @@
                     <label class="form-check-label" for="ingrediente1_{{ ingrediente.id }}">
                     {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
                     </label>
+                    <img src="{{ ingrediente.url_imagen }}" class="imagenes" alt="">
                 </div>
                 {% endif %}
             {% endfor %}
@@ -53,6 +55,7 @@
                     <label class="form-check-label" for="ingrediente2_{{ ingrediente.id }}">
                     {{ ingrediente.nombre }}- ${{ ingrediente.precio }}
                     </label>
+                    <img src="{{ ingrediente.url_imagen }}" class="imagenes" alt="">
                 </div>
                 {% endif %}
             {% endfor %}
@@ -68,6 +71,7 @@
                     <label class="form-check-label" for="extra_{{ producto.id }}">
                     {{ producto.nombre }}- ${{ producto.precio }}
                     </label>
+                    <img src="{{ producto.url_imagen }}" class="imagenes" alt="">
                 </div>
                 {% endif %}
             {% endfor %}

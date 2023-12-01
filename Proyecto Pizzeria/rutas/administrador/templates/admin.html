@@ -68,12 +68,14 @@
                       <th>ID</th>
                       <th>Nombre</th>
                       <th>Precio</th>
+                      <th>Url_Imagen</th>
                     </tr>
                     {% for producto in tablaProductos %}
                     <tr class="registro" onclick="seleccionarRegistroProductos(this)">
                       <td>{{ producto.id }}</td>
                       <td>{{ producto.nombre }}</td>
                       <td>{{ producto.precio }}</td>
+                      <td>{{ producto.url_imagen }}</td>
                     </tr>
                     {% endfor %}              
                   </table>
@@ -88,6 +90,7 @@
                       <th>Nombre</th>
                       <th>Categoria</th>
                       <th>Precio</th>
+                      <th>Url_Imagen</th>
                     </tr>
                     {% for ingrediente in tablaIngredientes %}
                     <tr class="registro" onclick="seleccionarRegistroIngredientes(this)">
@@ -95,6 +98,7 @@
                       <td>{{ ingrediente.nombre }}</td>
                       <td>{{ ingrediente.categoria }} </td>
                       <td>{{ ingrediente.precio }} </td>
+                      <td>{{ ingrediente.url_imagen }}</td>
                     </tr>
                     {% endfor %}   
                   </table>
@@ -132,7 +136,13 @@
     </section> 
 
     <div>
-      <button class="btn btn-dark" id="btn_agregar" onclick="AgregarRegistro()">Agregar</button>
+      <button class="btn btn-success" id="btn_agregar" onclick="AgregarRegistro()">Agregar</button>
+    </div>
+    <div>
+      <button class="btn btn-success" id="btn_excel" onclick="BotonExcel()">Generar Excel</button>
+    </div>
+    <div>
+      <button class="btn btn-danger" id="btn_salir" onclick="BotonSalir()">Salir</button>
     </div>
 
     <div class="position-fixed" id="div_detalles">
@@ -216,12 +226,19 @@
                           <input type="text" class="form-control" id="nombreIngrediente">
                       </div>
                       <div class="form-group">
-                          <label for="categoriaIngrediente">Categoría:</label>
-                          <input type="text" class="form-control" id="categoriaIngrediente">
-                      </div>
-                      <div class="form-group">
                           <label for="precioIngrediente">Precio:</label>
                           <input type="text" class="form-control" id="precioIngrediente">
+                      </div>
+                      <div class="form-group">
+                        <label for="urlImagenIngrediente">Url de la imagen:</label>
+                        <input type="text" class="form-control" id="urlImagenIngrediente">
+                    </div>
+                      <div class="form-group">
+                        <label for="categoria" class="col-form-label">Categoría:</label>
+                        <select class="form-select" id="categoriaIngrediente">
+                          <option value="ingrediente">Ingrediente</option>
+                          <option value="masa">Masa</option>
+                        </select>
                       </div>
                   </form>
               </div>
@@ -254,6 +271,10 @@
                         <label for="precioProducto">Precio:</label>
                         <input type="text" class="form-control" id="precioProducto">
                     </div>
+                    <div class="form-group">
+                      <label for="urlImagenProducto">Url de la imagen:</label>
+                      <input type="text" class="form-control" id="urlImagenProducto">
+                  </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -285,7 +306,9 @@
       var miModalIngrediente = new bootstrap.Modal(document.getElementById('modalIngrediente'));
       var miModalProducto = new bootstrap.Modal(document.getElementById('modalProducto'));
 
-
+      function BotonSalir(){
+        window.location.href='/login'
+      }
       function SeleccionarTablaPedidos(){
         tablaActual = "pedidos"
         BotonAgregar.disabled = true
@@ -319,6 +342,7 @@
                         'id':IdSeleccionado,
                         'nombre':document.getElementById('nombreProducto').value,
                         'precio':document.getElementById('precioProducto').value,
+                        'url_imagen':document.getElementById('urlImagenProducto').value,
                         'tabla': tablaActual
                     })
                 })
@@ -369,6 +393,7 @@
                         'nombre':document.getElementById('nombreIngrediente').value,
                         'categoria':document.getElementById('categoriaIngrediente').value,
                         'precio':document.getElementById('precioIngrediente').value,
+                        'url_imagen':document.getElementById('urlImagenIngrediente').value,
                         'tabla': tablaActual
                     })
                 })
@@ -434,6 +459,7 @@
             const id = fila.cells[0].textContent;
             const nombre = fila.cells[1].textContent;
             const precio = fila.cells[2].textContent;
+            const url_imagen = fila.cells[3].textContent;
             tablaActual = "productos"
             IdSeleccionado = fila.cells[0].textContent;
 
@@ -442,7 +468,8 @@
                 id: id,
                 nombre: nombre,
                 precio: precio,
-                tabla: tablaActual
+                tabla: tablaActual,
+                url_imagen:url_imagen
             };
             ActualizarInfo(datosSeleccionados)
             document.getElementById('btn_editar').disabled = false;
@@ -456,6 +483,7 @@
             const nombre = fila.cells[1].textContent;
             const categoria = fila.cells[2].textContent;
             const precio = fila.cells[3].textContent;
+            const url_imagen = fila.cells[4].textContent;
             tablaActual = "ingredientes"
             IdSeleccionado = fila.cells[0].textContent;
 
@@ -465,7 +493,8 @@
                 nombre: nombre,
                 categoria: categoria,
                 precio: precio,
-                tabla:tablaActual
+                tabla: tablaActual,
+                url_imagen:url_imagen
             };
             ActualizarInfo(datosSeleccionados)
             document.getElementById('btn_editar').disabled = false;
@@ -509,10 +538,19 @@
           infoList.innerHTML = '';
 
           for (const clave in arreglo) {
-            const li = document.createElement('li');
-            li.textContent = `${clave}: ${arreglo[clave]}`;
-            infoList.appendChild(li);
+            
+            if(clave == 'url_imagen'){
+              const img = document.createElement('img');
+              img.src = arreglo[clave];
+              img.alt = 'Imagen';
+              img.id = 'imagenRegistro';
+              infoList.appendChild(img);
+            }else{
+              const li = document.createElement('li');
+              li.textContent = `${clave}: ${arreglo[clave]}`;
+              infoList.appendChild(li);
             }
+          }   
         }
 
         function MostrarModal(){
@@ -553,6 +591,10 @@
         function EditarRegistro(){
           MostrarModal()
           ultimoBoton = "editar"
+        }
+
+        function BotonExcel(){
+
         }
 
     </Script>

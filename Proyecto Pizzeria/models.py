@@ -58,21 +58,25 @@ class Ingredientes(db.Model):
     nombre=db.Column(db.String(255),nullable=True)
     categoria=db.Column(db.String(255),nullable=True)
     precio=db.Column(db.Float)
+    url_imagen=db.Column(db.String(1000))
     
-    def __init__(self,nombre,categoria,precio):
+    def __init__(self,nombre,categoria,precio,url_imagen):
         self.nombre=nombre
         self.categoria=categoria
         self.precio=precio
+        self.url_imagen=url_imagen
     
 class Productos(db.Model):
     __tablename__="productos"
     id=db.Column(db.Integer,primary_key=True,autoincrement=True)
     nombre=db.Column(db.String(255),nullable=True)
     precio=db.Column(db.Float)
+    url_imagen=db.Column(db.String(1000))
     
-    def __init__(self,nombre,precio):
+    def __init__(self,nombre,precio,url_imagen):
         self.nombre=nombre
         self.precio=precio
+        self.url_imagen=url_imagen
     
 class Pedidos(db.Model):
     __tablename__="pedidos"

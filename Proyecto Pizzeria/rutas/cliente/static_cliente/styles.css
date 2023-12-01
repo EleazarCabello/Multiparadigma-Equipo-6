@@ -240,6 +240,11 @@ tr:nth-child(even) {
   font-size: 13px;
 }
 
+.imagenes{
+  width: 40px;
+  height: 40px;
+}
+
 footer {
   background-color: #333;
   color: #fff;
