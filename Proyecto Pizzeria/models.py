@@ -50,6 +50,7 @@ class Usuarios(db.Model):
             print("EXCEPTION")
             print(e)
             return e
+    
         
         
 class Ingredientes(db.Model):

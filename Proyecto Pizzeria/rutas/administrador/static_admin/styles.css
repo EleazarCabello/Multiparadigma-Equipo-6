@@ -244,6 +244,14 @@ tr:nth-child(even) {
   right: 6%;
 }
 
+#btn_pdf{
+  position: fixed;
+  bottom: 21%;
+  right: 6.3%;
+  background-color: rgb(161, 59, 59);
+  color: white;
+}
+
 footer {
   background-color: #333;
   color: #fff;

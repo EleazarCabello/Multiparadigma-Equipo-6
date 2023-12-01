@@ -18,7 +18,8 @@ def login():
 
 @appIndex.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html')    
+   
 
 @appIndex.route('/register/crear_cuenta',methods=["GET","POST"])
 def crear_cuenta():

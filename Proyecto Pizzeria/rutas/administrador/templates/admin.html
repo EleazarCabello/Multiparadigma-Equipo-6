@@ -139,6 +139,9 @@
       <button class="btn btn-success" id="btn_agregar" onclick="AgregarRegistro()">Agregar</button>
     </div>
     <div>
+      <button class="btn btn" id="btn_pdf" onclick="BotonPdf()">Generar PDF</button>
+    </div>
+    <div>
       <button class="btn btn-success" id="btn_excel" onclick="BotonExcel()">Generar Excel</button>
     </div>
     <div>
@@ -594,8 +597,55 @@
         }
 
         function BotonExcel(){
-
+         
+          fetch('/descargar_csv/'+tablaActual)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Crea un enlace (link) en el documento y simula un clic para descargar el archivo.
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data_'+tablaActual+'.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        })
+        .catch(error => {
+            console.error('Error al descargar el archivo CSV:', error);
+        });
+          
         }
+
+        function BotonPdf(){
+          fetch('/generarPdf/'+tablaActual)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`La petición falló con estado ${response.status}`);
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                // Crear un enlace temporal para descargar el PDF
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'reporte_'+tablaActual+'.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                console.error('Error al descargar el PDF:', error);
+            });
+    };
+        
 
     </Script>
 </body>
